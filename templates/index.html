@@ -118,18 +118,36 @@
       $(document).ready(function () {
         listing();
       });
+      // 스토리지에 토큰이 있으면 nav바에 있는 값들을 바꿔줘요.
+      document.addEventListener("DOMContentLoaded", () => {
+        if (localStorage.getItem("token")) {
+          document.getElementById("account-create").innerHTML =
+            '<a class="nav-link" href="#" id="logout-link">로그아웃</a>';
+          document.getElementById("account-login").style.display = "none";
+        }
+      });
+
+      document.addEventListener("click", function (e) {
+        if (e.target.id === "logout-link") {
+          localStorage.removeItem("token");
+          alert("로그아웃 되었습니다!");
+          window.location.href = "/";
+        }
+      });
 
       function listing() {
-        fetch("/api/reviews").then((res)=>res.json()).then((data)=>{
-          reviews = data['reviews'];
-          $('#cards-box').empty();
-          console.log(reviews)
-          reviews.forEach((review)=>{
-                let title = review['title'];
-                let author = review['author'];
-                let description = review['description'];
-                console.log(title, author, description)
-                let temp_html = `
+        fetch("/api/reviews")
+          .then((res) => res.json())
+          .then((data) => {
+            reviews = data["reviews"];
+            $("#cards-box").empty();
+            console.log(reviews);
+            reviews.forEach((review) => {
+              let title = review["title"];
+              let author = review["author"];
+              let description = review["description"];
+              console.log(title, author, description);
+              let temp_html = `
                 <div class="col">
                     <div class="card h-100">
                         <img
@@ -142,23 +160,20 @@
                         <p class="description">${description}</p>
                         </div>
                     </div>
-                </div>`
-                $('#cards-box').append(temp_html);
-          })
-        })
+                </div>`;
+              $("#cards-box").append(temp_html);
+            });
+          });
       }
 
       function posting() {
         // let url = $('#url').val()
         // let comment = $('#comment').val()
         // let star = $('#star').val()
-        
         // let formData = new FormData();
         // formData.append("sample_url", url);
         // formData.append("sample_comment", comment);
         // formData.append("sample_star", star);
-
-
         // fetch("/movie", { method: "POST", body: formData })
         //   .then((res) => res.json())
         //   .then((data) => {
@@ -177,10 +192,33 @@
   </head>
 
   <body>
-    <div class="login">
-      <button type="button" class="btn btn-light">로그인</button>
-      <button type="button" class="btn btn-light">회원가입</button>
-    </div>
+    <!-- 네비게이션바 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <div class="container-fluid">
+        <a class="navbar-brand">신김리 책방</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item" id="account-create">
+              <a class="nav-link" href="/register">계정생성</a>
+            </li>
+            <li class="nav-item" id="account-login">
+              <a class="nav-link" href="/login">로그인</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <div class="mytitle">
       <h1>신김리 책방</h1>
       <button onclick="open_box1()">등록하기</button>
@@ -236,7 +274,6 @@
             <option value="5">⭐⭐⭐⭐⭐</option>
         </select>
     </div> -->
-
     </div>
     <div class="mycards">
       <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
