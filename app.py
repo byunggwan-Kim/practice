@@ -70,6 +70,29 @@ def login_user():
         return jsonify({'msg': '로그인 성공', 'token': token})
     else:
         return jsonify({'msg': '로그인 실패'})
+    
+@app.route('/review_start', methods=['GET'])
+def review_start():
+    return render_template('review.html')
+    
+@app.route("/review", methods=["POST"])
+def review_post():
+    star_receive = request.form['star_give']
+    comment_receive = request.form['comment_give']
+
+    doc = {
+        'star' : star_receive,
+        'comment' : comment_receive
+    }
+
+    db.review.insert_one(doc)
+
+    return jsonify({'msg': '저장 완료!'})
+
+@app.route("/review", methods=["GET"])
+def guestbook_get():
+    all_reviews = list(db.review.find({},{'_id':False}))
+    return jsonify({'result': all_reviews})
 
 
 @app.route('/')
