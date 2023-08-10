@@ -64,15 +64,15 @@
       //DB로 넘기기위해 해당 인덱스별 title, authors,contents의 값을 지정
       function posting(index) {
         var title = $('.card-title span').eq(index).text();
-        var authors = $('.card-text span').eq(index).text();
-        var contents = $('.card-text2 span').eq(index).text();
+        var author = $('.card-text span').eq(index).text();
+        var content = $('.card-text2 span').eq(index).text();
         var comment = "미작성입니다.";
         var star = 3;
         var token = localStorage.getItem("token");
         let formData = new FormData();
             formData.append("title_give",title);
-            formData.append("authors_give",authors);
-            formData.append("contents_give",contents);
+            formData.append("authors_give",author);
+            formData.append("contents_give",content);
             formData.append("comment_give",comment);
             formData.append("star_give",star);
             formData.append("token_give",token);
