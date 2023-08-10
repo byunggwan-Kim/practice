@@ -64,7 +64,7 @@ def books_post():
     star_receive = request.form['star_give']
     token_receive = request.form['token_give']
     
-    doc = {'title':title_receive,'authors': authors_receive,'contents':contents_receive,
+    doc = {'title':title_receive,'author': authors_receive,'content':contents_receive,
            'comment' : comment_receive,'star':star_receive,'token': token_receive
     }
     db.book.insert_one(doc)
