@@ -66,6 +66,7 @@
       <button type="submit">로그인</button>
     </form>
     <script>
+      document.getElementById("review_start").style.display = "none";
       document.addEventListener("DOMContentLoaded", () => {
         if (localStorage.getItem("token")) {
           document.getElementById("account-create").innerHTML =

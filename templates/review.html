@@ -133,7 +133,7 @@
         .review_box {
             width: 350px; 
             height: 150px; 
-            border: 1px solid black; 
+            
             margin : 10px;
             display: flex;
             flex-direction: column;
@@ -152,28 +152,42 @@
         .review_score {
             width: 470px;
             height: 100px;
-            border: 1px solid black;
             margin: 10px;
             display: flex;
             flex-direction: row;
             justify-content: space-around;
-            padding-top: 30px;
+            padding-top: 20px;
         }
 
         .review_comment {
-            width: 470px;
+            width: 500px;
             height: 100px;
-            border: 1px solid black;
             margin: 10px;
             display: flex;
             flex-direction: row;
             justify-content: space-around;
-            padding-top: 30px;
+            /* padding-top: 20px; */
         }
 
-        #comment {
+        #comment  {
             width: 250px;
             resize : none;
+        }
+
+        #review_title {
+          height: 30px;
+          width: 300px;
+        }
+
+        #review_author {
+          height: 30px;
+          width: 300px;
+        }
+
+        #review_description {
+          height: 30px;
+          width: 300px;
+          resize: none;
         }
 
     </style>
@@ -229,42 +243,57 @@
           });
       }
 
-      function show_review() {
-            fetch('/review').then((res) => res.json()).then((data) => {
-                let rows = data['result']
-                $('#comment-list').empty()
-                rows.forEach((a) => {
-                    let star = a['star']
-                    let comment = a['comment']
+      // function show_review() {
+      //       fetch('/review').then((res) => res.json()).then((data) => {
+      //           let rows = data['result']
+      //           $('#comment-list').empty()
+      //           rows.forEach((a) => {
+      //               let star = a['star']
+      //               let comment = a['comment']
 
-                    let star_repeat = '⭐'.repeat(star)
+      //               let star_repeat = '⭐'.repeat(star)
 
-                    let temp_html = `<div class="card">
-                                        <div class="card-body">
-                                            <blockquote class="blockquote mb-0">
-                                                <p>${comment}</p>
-                                                <footer class="blockquote-footer">${star_repeat}</footer>
-                                            </blockquote>
-                                        </div>
-                                    </div>`
-                    $('#comment-list').append(temp_html)
-                })
+      //               let temp_html = `<div class="card">
+      //                                   <div class="card-body">
+      //                                       <blockquote class="blockquote mb-0">
+      //                                           <p>${comment}</p>
+      //                                           <footer class="blockquote-footer">${star_repeat}</footer>
+      //                                       </blockquote>
+      //                                   </div>
+      //                               </div>`
+      //               $('#comment-list').append(temp_html)
+      //           })
                 
-            })
-        }
+      //       })
+      //   }
 
-        function save_review() {
-            let star = $('#star').val()
+        function save_review(token) {
+          var tokenHere = localStorage.getItem("token")
+
+            let review_title = $('#review_title').val()
+            let review_author = $('#review_author').val()
             let comment = $('#comment').val()
+            let review_description = $('#review_description').val()
+            let star = $('#star').val()
+            let write_user = tokenHere
 
             let formData = new FormData();
-            formData.append("star_give", star);
+            formData.append("review_title_give", review_title)
+            formData.append("review_author_give", review_author)
             formData.append("comment_give", comment)
+            formData.append("review_description_give", review_description)
+            formData.append("star_give", star)
+            formData.append("write_user_give", write_user);
+            
 
             fetch('/review', { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
                 alert(data["msg"]);
                 window.location.reload()
             });
+
+            location.href = "/";
+            
+            
         }
 
       function posting() {
@@ -349,7 +378,7 @@
       </div>
       <div class="form-floating">
         <textarea
-          id="comment"
+          id="comments"
           class="form-control"
           placeholder="Leave a comment here"
         ></textarea>
@@ -384,25 +413,22 @@
           <img src="">
       </div>
       <div class="review_box">
-          <div>
-              <p>책제목</p>
-          </div>
-          <div>
-              <p>작가</p>
-          </div>
-          <div>
-              <p>설명</p>
-          </div>
+        <div>
+          <input class="form-control" placeholder="제목을 입력해주세요" type="text" id="review_title" name="review_title" required>
+        </div>
+        <div>
+          <input class="form-control" placeholder="작가 이름을 입력해주세요" type="text" id="review_author" name="review_author" required>
+        </div>
+        <div>
+          <textarea class="form-control" placeholder="내용을 입력해주세요" id="review_description" name="review_description" rows="5" required></textarea>
+        </div>
       </div>
   </div>
   <div class="myreview">
       <div class="review_score">
           <div>
-              <p>별점</p>
-          </div>
-          <div>
               <select class="form-select" id="star">
-                  <option selected>-- 선택하기 --</option>
+                  <option selected>-- 별점 선택하기 --</option>
                   <option value="1">⭐</option>
                   <option value="2">⭐⭐</option>
                   <option value="3">⭐⭐⭐</option>
@@ -413,29 +439,16 @@
       </div>
       <div class="review_comment">
           <div>
-              <p>코멘트</p>
-          </div>
-          <div>
-              <textarea class="form-control" placeholder="책리뷰를 입력해주세요" id="comment"></textarea>
+              <textarea class="form-control" placeholder="책리뷰를 입력해주세요" id="comment" style="width: 300px;"></textarea>
           </div>
       </div>
       <button onclick="save_review()" type="button" class="btn btn-dark" style="position: relative; left: 200px;">
           리뷰 남기기
       </button>
   </div>
-  <div class="mycards" id="comment-list">
-      <div class="card">
-          <div class="card-body">
-              <blockquote class="blockquote mb-0">
-                  <p>새로운 앨범 너무 멋져요!</p>
-                  <footer class="blockquote-footer">호빵맨</footer>
-              </blockquote>
-          </div>
-      </div>
-  </div>
-    <div class="mycards">
+    <!-- <div class="mycards">
       <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-        <!-- <div class="col">
+         <div class="col">
           <div class="card h-100">
             <img
               src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
@@ -448,8 +461,8 @@
               <p class="mycomment">나의 한줄 평을 씁니다</p>
             </div>
           </div>
-        </div> -->
+    </div> -->
       </div>
-    </div>
+    </div> 
   </body>
 </html>

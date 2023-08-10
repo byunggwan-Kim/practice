@@ -17,7 +17,7 @@ SECRET_KEY = "team8key"
 app = Flask(__name__)
 ca = certifi.where()
 client = MongoClient(
-    'mongodb+srv://sparta:test@cluster0.orw6l7l.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
+    'mongodb+srv://sparta:test@cluster0.fxv5hyn.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
 db = client.dbsparta
 
 # /register url에 POST 요청이 들어오면 아래 함수를 작동
@@ -82,12 +82,23 @@ def review_start():
     
 @app.route("/review", methods=["POST"])
 def review_post():
-    star_receive = request.form['star_give']
+    review_title_receive = request.form['review_title_give']
+    review_author_receive = request.form['review_author_give']
     comment_receive = request.form['comment_give']
+    review_description_receive = request.form['review_description_give']
+    star_receive = request.form['star_give']
+    write_user_receive = request.form['write_user_give']
+    
+    encoded = jwt.decode(write_user_receive, SECRET_KEY, algorithms='HS256');
+    write_user = encoded['user']
 
     doc = {
+        'title': review_title_receive,
+        'author': review_author_receive,
+        'comment' : comment_receive,
+        'description': review_description_receive,
         'star' : star_receive,
-        'comment' : comment_receive
+        'write_user' : write_user
     }
 
     db.review.insert_one(doc)
