@@ -3,6 +3,9 @@ import requests
 from pymongo import MongoClient
 from flask import Flask, render_template, request, jsonify
 
+import certifi
+# pymongo 에러 해결을 위해 import
+
 # 로그인에 필요한 라이브러리를 가져옵니다.
 import jwt
 import datetime
@@ -11,8 +14,9 @@ import datetime
 SECRET_KEY = "team8key"
 
 app = Flask(__name__)
+ca = certifi.where()
 client = MongoClient(
-    'mongodb+srv://sparta:test@cluster0.orw6l7l.mongodb.net/?retryWrites=true&w=majority')
+    'mongodb+srv://sparta:test@cluster0.orw6l7l.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
 db = client.dbsparta
 
 # /register url에 POST 요청이 들어오면 아래 함수를 작동
